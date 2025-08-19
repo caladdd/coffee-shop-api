@@ -29,10 +29,6 @@ const validateInput = (input: unknown): CreateOrderInput => {
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     try {
-        if (event.requestContext.http.method !== 'POST') {
-            return respond(405, { message: 'Method Not Allowed' });
-        }
-
         const payload = event.body ?? '{}';
         const { customerName, coffeeType } = validateInput(payload);
 
