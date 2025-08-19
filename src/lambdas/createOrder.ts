@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 import { PutCommand } from '@aws-sdk/lib-dynamodb';
 import { dynamoDB, ORDERS_TABLE } from '../lib/dynamo';
-import {respond} from '../utils/utils';
+import { respond } from '../utils/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { Order } from '../types';
 
@@ -13,8 +13,10 @@ type CreateOrderInput = {
 const validateInput = (input: unknown): CreateOrderInput => {
     let body: any = input;
 
-    const customerName = typeof body?.customerName === 'string' ? body.customerName.trim() : '';
-    const coffeeType = typeof body?.coffeeType === 'string' ? body.coffeeType.trim() : '';
+    const customerName =
+        typeof body?.customerName === 'string' ? body.customerName.trim() : '';
+    const coffeeType =
+        typeof body?.coffeeType === 'string' ? body.coffeeType.trim() : '';
 
     if (!customerName || !coffeeType) {
         const e = new Error('customerName and coffeeType are required');

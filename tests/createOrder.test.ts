@@ -45,7 +45,7 @@ describe('createOrder', () => {
         expect(ddbMock.commandCalls(PutCommand).length).toBe(0);
     });
 
-    test('trims input and rejects when values are only whitespace', async () => {
+    test('returns 400 when input is only whitespace', async () => {
         const event = makeEvent({ customerName: '   ', coffeeType: '   ' });
         const res = await handler(event, context, callbackFunction);
         const body = JSON.parse((res as any).body);
@@ -55,7 +55,7 @@ describe('createOrder', () => {
         expect(ddbMock.commandCalls(PutCommand).length).toBe(0);
     });
 
-    test('accepts valid trimmed input and proceeds', async () => {
+    test('returns 201 when valid trimmed input', async () => {
         ddbMock.on(PutCommand).resolves({} as any);
         const event = makeEvent({ customerName: '  Juan  ', coffeeType: '  Americano ' });
         const res = await handler(event, context, callbackFunction);
@@ -69,7 +69,7 @@ describe('createOrder', () => {
         expect(ddbMock.commandCalls(PutCommand).length).toBe(1);
     });
 
-    test('returns 400 when body is missing or not an object', async () => {
+    test('returns 400 when body is missing', async () => {
         const res = await handler({ requestContext: { http: { method: 'POST' } } } as any, context, callbackFunction);
         const body = JSON.parse((res as any).body);
 
