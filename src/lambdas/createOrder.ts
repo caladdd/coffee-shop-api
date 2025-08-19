@@ -29,7 +29,7 @@ const validateInput = (input: unknown): CreateOrderInput => {
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     try {
-        const payload = event.body ?? '{}';
+        const payload = event.body ? JSON.parse(event.body) : {};
         const { customerName, coffeeType } = validateInput(payload);
 
         const now = new Date().toISOString();

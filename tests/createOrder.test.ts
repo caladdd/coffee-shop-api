@@ -4,7 +4,7 @@ import { handler } from '../src/lambdas/createOrder';
 
 const ddbMock = mockClient(DynamoDBDocumentClient as any);
 describe('createOrder', () => {
-    const makeEvent: any = (body: any): any => ({ body });
+    const makeEvent: any = (body: any): any => ({ body: JSON.stringify(body) });
     const context: any = {};
     const callbackFunction = jest.fn();
 
