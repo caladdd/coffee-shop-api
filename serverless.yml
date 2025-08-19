@@ -1,0 +1,103 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: jcaladh
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: coffee-shop-api
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: coffee-shop-api
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  # Uncomment to easily set up a custom domain. Read the docs for more details:
+  # https://www.serverless.com/framework/docs/providers/aws/guide/domains
+  # domain: api.example.com
+  region: ${opt:region, env:AWS_REGION, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  memorySize: 256
+  timeout: 10
+  logRetentionInDays: 14
+  environment:
+    NODE_OPTIONS: '--enable-source-maps'
+    STAGE: ${sls:stage}
+    ORDERS_TABLE: ${self:service}-orders-${sls:stage}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:Scan
+          Resource:
+            - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:provider.environment.ORDERS_TABLE}
+
+plugins:
+  - serverless-offline
+
+package:
+  individually: true
+  patterns:
+    - '!tests/**'
+    - '!docs/**'
+
+custom:
+  esbuild:
+    bundle: true
+    minify: true
+    sourcemap: true
+    target: 'node20'
+    platform: 'node'
+    concurrency: 10
+
+functions:
+  createOrder:
+    handler: src/lambdas/createOrder.handler
+    events:
+      - http:
+          path: orders
+          method: post
+          cors: true
+  getOrder:
+    handler: src/lambdas/getOrder.handler
+    events:
+      - http:
+          path: orders/{id}
+          method: get
+          cors: true
+  listOrders:
+    handler: src/lambdas/listOrders.handler
+    events:
+      - http:
+          path: orders
+          method: get
+          cors: true
+  updateOrder:
+    handler: src/lambdas/updateOrder.handler
+    events:
+      - http:
+          path: orders/{id}
+          method: put
+          cors: true
+  deleteOrder:
+    handler: src/lambdas/deleteOrder.handler
+    events:
+      - http:
+          path: orders/{id}
+          method: delete
+          cors: true
+
+resources:
+  Resources:
+    OrdersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: orderId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: orderId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.ORDERS_TABLE}

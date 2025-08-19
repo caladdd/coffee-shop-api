@@ -1,0 +1,30 @@
+{
+  "name": "coffee-shop-api",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/caladdd/coffee-shop-api#readme",
+  "bugs": {
+    "url": "https://github.com/caladdd/coffee-shop-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caladdd/coffee-shop-api.git"
+  },
+  "license": "ISC",
+  "author": "Juan Calad",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "serverless offline --stage dev",
+    "build": "serverless package --stage dev",
+    "test": "jest --coverage",
+    "deploy:dev": "serverless deploy --stage dev"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.152",
+    "@types/node": "^24.3.0",
+    "serverless": "^4.18.0",
+    "serverless-offline": "^14.4.0",
+    "typescript": "^5.9.2"
+  }
+}
