@@ -14,6 +14,7 @@ describe('createOrder', () => {
 
     test('returns 400 when both customerName and coffeeType are missing', async () => {
         const event = makeEvent({});
+
         const res = await handler(event, context, callbackFunction);
         const body = JSON.parse((res as any).body);
         
@@ -24,6 +25,7 @@ describe('createOrder', () => {
 
     test('returns 400 when customerName is missing', async () => {
         const event = makeEvent({ coffeeType: 'Americano' });
+
         const res = await handler(event, context, callbackFunction);
         const body = JSON.parse((res as any).body);
         
@@ -34,6 +36,7 @@ describe('createOrder', () => {
 
     test('returns 400 when coffeeType is missing', async () => {
         const event = makeEvent({ customerName: 'Juan' });
+
         const res = await handler(event, context, callbackFunction);
         const body = JSON.parse((res as any).body);
         
@@ -44,6 +47,7 @@ describe('createOrder', () => {
 
     test('returns 400 when input is only whitespace', async () => {
         const event = makeEvent({ customerName: '   ', coffeeType: '   ' });
+
         const res = await handler(event, context, callbackFunction);
         const body = JSON.parse((res as any).body);
         
@@ -55,6 +59,7 @@ describe('createOrder', () => {
     test('returns 201 when valid trimmed input', async () => {
         ddbMock.on(PutCommand).resolves({} as any);
         const event = makeEvent({ customerName: '  Juan  ', coffeeType: '  Americano ' });
+        
         const res = await handler(event, context, callbackFunction);
         const body = JSON.parse((res as any).body);
 

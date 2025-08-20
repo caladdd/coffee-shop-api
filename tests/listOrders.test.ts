@@ -38,7 +38,6 @@ describe('listOrders', () => {
     it('returns 500 and logs on unknown/internal errors', async () => {
         const err = new Error('DB down');
         const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
         ddbMock.on(ScanCommand).rejects(err);
 
         const res = await handler(event, context, callbackFunction);
